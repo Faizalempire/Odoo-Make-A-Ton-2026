@@ -1,6 +1,10 @@
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+
+const connectDB = require("./config/db");
 
 const app = express();
 
@@ -16,9 +20,15 @@ app.get("/", (req, res) => {
   });
 });
 
-// Server configuration
-const PORT = process.env.PORT || 5000;
+// Start server after connecting to MongoDB
+const startServer = async () => {
+  await connectDB();
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  const PORT = process.env.PORT || 5000;
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+startServer();
